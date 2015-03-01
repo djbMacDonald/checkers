@@ -38,3 +38,7 @@
 .legal {
   background: repeating-linear-gradient(45deg, #A0522D, #A0522D 10px, #70391F 10px, #70391F 20px);
 }
+
+.current {
+  border: 5px solid blue;
+}

@@ -2,9 +2,14 @@ $(document).ready(function(){
   Board.create();
   Board.setPieces();
   $('.redPawn').click(Board.show);
+  $('.blackPawn').click(Board.show);
 });
 
 var Board = Board || {};
+
+Board.activePlayer = function() {
+  return 'red';
+};
 
 Board.create = function(){
   for (var i = 0; i < 8; i++){
@@ -83,26 +88,47 @@ Board.setBlacks = function(){
   $('#2_3').append($('<div class=blackPawn>'));
   $('#2_5').append($('<div class=blackPawn>'));
   $('#2_7').append($('<div class=blackPawn>'));
+  $('#4_1').append($('<div class=blackPawn>'));
+  $('#3_0').append($('<div class=blackPawn>'));
 };
 
 Board.show = function(){
-  // console.log($(this).parent().data().row);
+  $('.square').removeClass('legal');
+  $('*').removeClass('current');
+  $(this).addClass('current');
   if ($(this).hasClass('redPawn')){
-    Board.findLegal($(this).parent());
+    Board.findRedPawnLegal($(this).parent());
+  } else if ($(this).hasClass('blackPawn')) {
+    Board.findBlackPawnLegal($(this).parent());
   }
-  // $(this).parent().addClass('legal');
 };
-Board.findLegal = function(square){
-    var row = square.data().row;
-    var col = square.data().col;
 
-    if (square.data().col === 0){
-      $("#" + (row - 1) + "_" + (col + 1)).addClass('legal');
-      $("#" + (row - 1) + "_" + (7)).addClass('legal');
-    }
+Board.findRedPawnLegal = function(square){
+  var row = square.data().row;
+  var col = square.data().col;
 
+  $("#" + (row - 1 + 8)%8 + "_" + (col + 1)%8).addClass('legal');
+  if ($("#" + (row - 1 + 8)%8 + "_" + (col + 1)%8).children('div.blackPawn').length === 1 && $("#" + (row - 2 + 8)%8 + "_" + (col + 2)%8).children('div.blackPawn').length === 0){
+    $("#" + (row - 2 + 8)%8 + "_" + (col + 2)%8).addClass('legal')
+  }
 
+  $("#" + (row - 1 + 8)%8 + "_" + (col + 7)%8).addClass('legal');
+  if ($("#" + (row - 1 + 8)%8 + "_" + (col + 7)%8).children('div.blackPawn').length > 0){
+    $("#" + (row - 2 + 8)%8 + "_" + (col + 6)%8).addClass('legal')
+  }
 
-    $("#" + (row - 1) + "_" + (col + 1)).addClass('legal');
-    $("#" + (row - 1) + "_" + (col - 1)).addClass('legal');
+};
+
+Board.findBlackPawnLegal = function(square){
+  var row = square.data().row;
+  var col = square.data().col;
+  $("#" + (row + 1 + 8)%8 + "_" + (col + 1)%8).addClass('legal');
+  if ($("#" + (row + 1 + 8)%8 + "_" + (col + 1)%8).children('div.redPawn').length > 0){
+    $("#" + (row + 2 + 8)%8 + "_" + (col + 2)%8).addClass('legal')
+  }
+
+  $("#" + (row + 1 + 8)%8 + "_" + (col + 7)%8).addClass('legal');
+  if ($("#" + (row + 1 + 8)%8 + "_" + (col + 7)%8).children('div.redPawn').length > 0){
+    $("#" + (row + 2 + 8)%8 + "_" + (col + 6)%8).addClass('legal')
+  }
 };
