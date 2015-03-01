@@ -87,54 +87,91 @@ Board.move = function(){
   if(Board.activePlayer === 'red'){
     $('h1').text('Black');
     Board.activePlayer = 'black';
-    $(this).append($('<div class=redPawn>'));
+    Board.createPiece($(this), 'red', 'Pawn');
     Board.cleanup();
     $('.blackPawn').click(Board.show);
   } else {
     $('h1').text('Red');
     Board.activePlayer = 'red';
-    $(this).append($('<div class=blackPawn>'));
+    Board.createPiece($(this), 'black', 'Pawn');
     Board.cleanup();
     $('.redPawn').click(Board.show);
   }
+  $('*').removeClass('current');
 };
 
 Board.lJump = function(){
   $('.current').remove();
   if(Board.activePlayer === 'red'){
-    Board.activePlayer = 'black';
-    $('h1').text('Black');
-    $(this).append($('<div class=redPawn>'));
+    Board.createPiece($(this), 'red', 'Pawn');
     $('.lTarget').children().remove();
     Board.cleanup();
-    $('.blackPawn').click(Board.show);
+    Board.findRedPawnLegal($(this));
+    if ($('.lJump, .rJump').length > 0){
+      $('.rJump').click(Board.rJump);
+      $('.lJump').click(Board.lJump);
+    } else {
+      $('*').removeClass('current');
+      $('.blackPawn').click(Board.show);
+      Board.activePlayer = 'black';
+      $('h1').text('Black');
+    }
   } else {
-    Board.activePlayer = 'red';
-    $('h1').text('Red');
-    $(this).append($('<div class=blackPawn>'));
+    Board.createPiece($(this), 'black', 'Pawn');
     $('.lTarget').children().remove();
     Board.cleanup();
-    $('.redPawn').click(Board.show);
+    Board.findBlackPawnLegal($(this));
+    if ($('.lJump, .rJump').length > 0){
+      $('.lJump').click(Board.lJump);
+    } else {
+      $('*').removeClass('current');
+      $('.redPawn').click(Board.show);
+      Board.activePlayer = 'red';
+      $('h1').text('Red');
+    }
   }
 };
 
 Board.rJump = function(){
   $('.current').remove();
   if(Board.activePlayer === 'red'){
-    Board.activePlayer = 'black';
-    $('h1').text('Black');
-    $(this).append($('<div class=redPawn>'));
+    Board.createPiece($(this), 'red', 'Pawn');
     $('.rTarget').children().remove();
     Board.cleanup();
-    $('.blackPawn').click(Board.show);
+    Board.findRedPawnLegal($(this));
+    if ($('.lJump, .rJump').length > 0){
+      $('.lJump').click(Board.lJump);
+      $('.rJump').click(Board.rJump);
+    } else {
+      $('*').removeClass('current');
+      $('.blackPawn').click(Board.show);
+      Board.activePlayer = 'black';
+      $('h1').text('Black');
+      $('.current').removeClass('current');
+    }
   } else {
-    Board.activePlayer = 'red';
-    $('h1').text('Red');
-    $(this).append($('<div class=blackPawn>'));
+    Board.createPiece($(this), 'black', 'Pawn');
     $('.rTarget').children().remove();
     Board.cleanup();
-    $('.redPawn').click(Board.show);
+    Board.findBlackPawnLegal($(this));
+    if ($('.lJump, .rJump').length > 0){
+      $('.lJump').click(Board.lJump);
+      $('.rJump').click(Board.rJump);
+    } else {
+      $('*').removeClass('current');
+      $('.redPawn').click(Board.show);
+      Board.activePlayer = 'red';
+      $('h1').text('Red');
+      $('.current').removeClass('current');
+    }
   }
+};
+
+Board.createPiece = function(place, color, type){
+  var newItem = $('<div>');
+  newItem.addClass(color + type);
+  newItem.addClass('current');
+  place.append(newItem);
 };
 
 Board.cleanup = function(){
@@ -143,6 +180,5 @@ Board.cleanup = function(){
   $('.rJump').removeClass('rJump');
   $('.lTarget').removeClass('lTarget');
   $('.rTarget').removeClass('rTarget');
-  $('.current').removeClass('current');
   $('.legal').removeClass('legal')
 }

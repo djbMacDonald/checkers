@@ -10,13 +10,14 @@ Board.setPieces = function(){
 };
 
 Board.setReds = function(){
-  $('#1_4').append($('<div class=redPawn>'));
-  $('#7_4').append($('<div class=redPawn>'));
+  $('#7_0').append($('<div class=redPawn>'));
 
 };
 
 Board.setBlacks = function(){
-  $('#0_3').append($('<div class=blackPawn>'));
-  $('#6_3').append($('<div class=blackPawn>'));
+  $('#6_1').append($('<div class=blackPawn>'));
+  $('#4_3').append($('<div class=blackPawn>'));
+  $('#2_3').append($('<div class=blackPawn>'));
+  $('#0_1').append($('<div class=blackPawn>'));
 
 };
