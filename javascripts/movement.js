@@ -4,9 +4,7 @@ $(document).ready(function(){
 
 var Board = Board || {};
 
-Board.activePlayer = function() {
-  return 'red';
-};
+Board.activePlayer = 'red';
 
 Board.show = function(){
   $('.legal').unbind();
@@ -80,8 +78,21 @@ Board.hasRed = function(square){
 
 Board.move = function(){
   $('.current').remove();
-  $(this).append($('<div class=redPawn>'));
-  $('.legal').removeClass('legal');
-  $('.redPawn').unbind();
-  $('.blackPawn').click(Board.show);
+  if(Board.activePlayer === 'red'){
+    Board.activePlayer = 'black';
+    $(this).append($('<div class=redPawn>'));
+    Board.cleanup();
+    $('.blackPawn').click(Board.show);
+  } else {
+    Board.activePlayer = 'red';
+    $(this).append($('<div class=blackPawn>'));
+    Board.cleanup();
+    $('.redPawn').click(Board.show);
+  }
 };
+
+Board.cleanup = function(){
+  $('*').unbind();
+  $('.current').removeClass('current');
+  $('.legal').removeClass('legal')
+}
