@@ -10,6 +10,7 @@ Board.activePlayer = function() {
 };
 
 Board.show = function(){
+  $('.legal').unbind();
   $('.square').removeClass('legal');
   $('*').removeClass('current');
   $(this).addClass('current');
@@ -18,6 +19,7 @@ Board.show = function(){
   } else if ($(this).hasClass('blackPawn')) {
     Board.findBlackPawnLegal($(this).parent());
   }
+  $('.legal').click(Board.move);
 };
 
 Board.findRedPawnLegal = function(square){
@@ -27,7 +29,6 @@ Board.findRedPawnLegal = function(square){
   var diagRightJump = $("#" + (row + 6)%8 + "_" + (col + 2)%8);
   var diagLeft = $("#" + (row + 7)%8 + "_" + (col + 7)%8);
   var diagLeftJump = $("#" + (row + 6)%8 + "_" + (col + 6)%8);
-  console.log(Board.hasBlack(diagRight));
 
   if (!Board.hasRed(diagRight) && Board.hasBlack(diagRight) && !Board.hasBlack(diagRightJump)) {
     diagRightJump.addClass('legal');
@@ -76,4 +77,10 @@ Board.hasRed = function(square){
   } else {
     return false;
   }
+};
+
+Board.move = function(){
+  $('.current').remove();
+  $(this).append($('<div class=redPawn>'));
+  $('.legal').removeClass('legal');
 };
