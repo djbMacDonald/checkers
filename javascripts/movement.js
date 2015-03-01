@@ -1,6 +1,5 @@
 $(document).ready(function(){
   $('.redPawn').click(Board.show);
-  $('.blackPawn').click(Board.show);
 });
 
 var Board = Board || {};
@@ -83,4 +82,6 @@ Board.move = function(){
   $('.current').remove();
   $(this).append($('<div class=redPawn>'));
   $('.legal').removeClass('legal');
+  $('.redPawn').unbind();
+  $('.blackPawn').click(Board.show);
 };
