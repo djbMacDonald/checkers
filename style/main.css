@@ -35,10 +35,13 @@
   margin: 5px auto 5px auto;
   border: 1px solid black;
 }
-.legal {
+.legal, .lJump, .rJump {
   background: repeating-linear-gradient(45deg, #A0522D, #A0522D 10px, #70391F 10px, #70391F 20px);
 }
 
 .current {
   border: 5px solid blue;
+}
+h1 {
+  float: left;
 }
