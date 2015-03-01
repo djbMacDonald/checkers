@@ -90,14 +90,17 @@ Board.move = function(){
     Board.createPiece($(this), 'red', 'Pawn');
     Board.cleanup();
     $('.blackPawn').click(Board.show);
+    Board.isKing($(this), 'red');
   } else {
     $('h1').text('Red');
     Board.activePlayer = 'red';
     Board.createPiece($(this), 'black', 'Pawn');
     Board.cleanup();
     $('.redPawn').click(Board.show);
+    Board.isKing($(this), 'black');
   }
   $('*').removeClass('current');
+
 };
 
 Board.lJump = function(){
@@ -111,6 +114,7 @@ Board.lJump = function(){
       $('.rJump').click(Board.rJump);
       $('.lJump').click(Board.lJump);
     } else {
+      Board.isKing($(this), 'red');
       $('*').removeClass('current');
       $('.blackPawn').click(Board.show);
       Board.activePlayer = 'black';
@@ -124,6 +128,7 @@ Board.lJump = function(){
     if ($('.lJump, .rJump').length > 0){
       $('.lJump').click(Board.lJump);
     } else {
+      Board.isKing($(this), 'black');
       $('*').removeClass('current');
       $('.redPawn').click(Board.show);
       Board.activePlayer = 'red';
@@ -143,6 +148,7 @@ Board.rJump = function(){
       $('.lJump').click(Board.lJump);
       $('.rJump').click(Board.rJump);
     } else {
+      Board.isKing($(this), 'red');
       $('*').removeClass('current');
       $('.blackPawn').click(Board.show);
       Board.activePlayer = 'black';
@@ -158,6 +164,7 @@ Board.rJump = function(){
       $('.lJump').click(Board.lJump);
       $('.rJump').click(Board.rJump);
     } else {
+      Board.isKing($(this), 'black');
       $('*').removeClass('current');
       $('.redPawn').click(Board.show);
       Board.activePlayer = 'red';
@@ -182,3 +189,14 @@ Board.cleanup = function(){
   $('.rTarget').removeClass('rTarget');
   $('.legal').removeClass('legal')
 }
+
+Board.isKing = function(place, color){
+  if (color==='red' && place.has('div.redPawn').length > 0 && place.data().row === 0){
+    alert('hi');
+    place.children().remove();
+    Board.createPiece(place, 'red', 'King');
+  } else if (color==='black' && place.hasClass('blackPawn') && place.data().row === 7){
+    place.children().remove();
+    Board.createPiece(place, 'black', 'King');
+  }
+};

@@ -18,6 +18,7 @@ Board.setBlacks = function(){
   $('#6_1').append($('<div class=blackPawn>'));
   $('#4_3').append($('<div class=blackPawn>'));
   $('#2_3').append($('<div class=blackPawn>'));
-  $('#0_1').append($('<div class=blackPawn>'));
+  $('#6_6').append($('<div class=blackPawn>'));
+  // $('#0_1').append($('<div class=blackPawn>'));
 
 };
