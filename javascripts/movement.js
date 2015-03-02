@@ -13,14 +13,15 @@ Board.show = function(){
   $('*').removeClass('current');
   $(this).addClass('current');
   if ($(this).hasClass('redPawn')){
-    Board.findRedPawnLegal($(this).parent());
+    Board.findMoves($(this).parent(), 'red', 'Pawn');
   } else if ($(this).hasClass('blackPawn')) {
-    Board.findBlackPawnLegal($(this).parent());
+    Board.findMoves($(this).parent(), 'red', 'Pawn');
   } else if ($(this).hasClass('redKing')) {
-    Board.findRedKingLegal($(this).parent());
+    Board.findMoves($(this).parent(), 'red', 'Pawn');
   } else if ($(this).hasClass('blackKing')) {
-    Board.findBlackKingLegal($(this).parent());
+    Board.findMoves($(this).parent(), 'red', 'Pawn');
   }
+  Board.setMoves();
   Board.setJumps();
 };
 
@@ -204,6 +205,7 @@ Board.executeJump = function(e, place, color, type){
   Board.cleanup();
   Board.findMoves(place, color, type);
   if ($('.lJump, .rJump, .trJump, .tlJump, brJump, .blJump').length > 0){
+    $('.legal').removeClass('legal');
     Board.setJumps();
   } else {
     Board.isKing(place, color);
@@ -212,8 +214,11 @@ Board.executeJump = function(e, place, color, type){
   }
 };
 
+Board.setMoves = function(){
+  $('.legal').click(Board.move);
+};
+
 Board.setJumps = function(){
-    $('.legal').click(Board.move);
     $('.lJump').click({'target':$('.lTarget')}, Board.jump);
     $('.rJump').click({'target':$('.rTarget')}, Board.jump);
     $('.trJump').click({'target':$('.trTarget')}, Board.jump);
@@ -224,13 +229,13 @@ Board.setJumps = function(){
 
 Board.findMoves = function(place, color, type){
   if (color === 'red' && type === 'Pawn'){
-    Board.findRedPawnLegal($(this));
+    Board.findRedPawnLegal(place);
   } else if (color === 'red' && type === 'King'){
-    Board.findRedKingLegal($(this));
+    Board.findRedKingLegal(place);
   } else if (color === 'black' && type === 'Pawn'){
-    Board.findBlackPawnLegal($(this));
+    Board.findBlackPawnLegal(place);
   } else if (color === 'black' && type === 'King'){
-    Board.findBlackKingLegal($(this));
+    Board.findBlackKingLegal(place);
   }
 };
 
@@ -257,6 +262,10 @@ Board.cleanup = function(){
   $('*').unbind();
   $('.lJump').removeClass('lJump');
   $('.rJump').removeClass('rJump');
+  $('.tlJump').removeClass('tlJump');
+  $('.trJump').removeClass('trJump');
+  $('.blJump').removeClass('blJump');
+  $('.brJump').removeClass('brJump');
   $('.lTarget').removeClass('lTarget');
   $('.rTarget').removeClass('rTarget');
   $('.legal').removeClass('legal')
