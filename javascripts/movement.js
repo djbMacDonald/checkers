@@ -21,9 +21,7 @@ Board.show = function(){
   } else if ($(this).hasClass('blackKing')) {
     Board.findBlackKingLegal($(this).parent());
   }
-  $('.legal').click(Board.move);
-  $('.lJump').click(Board.lJump);
-  $('.rJump').click(Board.rJump);
+  Board.setJumps();
 };
 
 Board.findRedPawnLegal = function(square){
@@ -57,13 +55,13 @@ Board.findBlackPawnLegal = function(square){
   var diagLeftJump = $("#" + (row + 2)%8 + "_" + (col + 6)%8);
 
   if (!Board.hasBlack(diagRight) && Board.hasRed(diagRight) && !Board.hasRed(diagRightJump) && !Board.hasBlack(diagRightJump)) {
-    diagRightJump.addClass('rJump');
+    diagRightJump.addClass('rjump');
     diagRight.addClass('rTarget');
   } else if (!Board.hasBlack(diagRight) && !Board.hasRed(diagRight)){
     diagRight.addClass('legal');
   }
   if (!Board.hasBlack(diagLeft) && Board.hasRed(diagLeft) && !Board.hasRed(diagLeftJump) && !Board.hasBlack(diagLeftJump)) {
-    diagLeftJump.addClass('lJump');
+    diagLeftJump.addClass('ljump');
     diagLeft.addClass('lTarget');
   } else if (!Board.hasBlack(diagLeft) && !Board.hasRed(diagLeft)){
     diagLeft.addClass('legal');
@@ -94,6 +92,18 @@ Board.findRedKingLegal = function(square){
   } else if (!Board.hasRed(diagTopLeft) && !Board.hasBlack(diagTopLeft)){
     diagTopLeft.addClass('legal');
   }
+  if (!Board.hasRed(diagBotRight) && Board.hasBlack(diagBotRight) && !Board.hasBlack(diagBotRightJump) && !Board.hasRed(diagBotRightJump)) {
+    diagBotRightJump.addClass('rJump');
+    diagBotRight.addClass('rTarget');
+  } else if (!Board.hasRed(diagBotRight) && !Board.hasBlack(diagBotRight)){
+    diagBotRight.addClass('legal');
+  }
+  if (!Board.hasRed(diagBotLeft) && Board.hasBlack(diagBotLeft) && !Board.hasBlack(diagBotLeftJump) && !Board.hasRed(diagBotLeftJump)) {
+    diagBotLeftJump.addClass('lJump');
+    diagBotLeft.addClass('lTarget');
+  } else if (!Board.hasRed(diagBotLeft) && !Board.hasBlack(diagBotLeft)){
+    diagBotLeft.addClass('legal');
+  }
 
 };
 
@@ -110,16 +120,28 @@ Board.findBlackKingLegal = function(square){
   var diagBotLeftJump = $("#" + (row + 6)%8 + "_" + (col + 6)%8);
 
   if (!Board.hasBlack(diagTopRight) && Board.hasRed(diagTopRight) && !Board.hasRed(diagTopRightJump) && !Board.hasBlack(diagTopRightJump)) {
-    diagTopRightJump.addClass('rJump');
-    diagTopRight.addClass('rTarget');
+    diagTopRightJump.addClass('trJump');
+    diagTopRight.addClass('trTarget');
   } else if (!Board.hasBlack(diagTopRight) && !Board.hasRed(diagTopRight)){
     diagTopRight.addClass('legal');
   }
   if (!Board.hasBlack(diagTopLeft) && Board.hasRed(diagTopLeft) && !Board.hasRed(diagTopLeftJump) && !Board.hasBlack(diagTopLeftJump)) {
-    diagTopLeftJump.addClass('lJump');
-    diagTopLeft.addClass('lTarget');
+    diagTopLeftJump.addClass('tlJump');
+    diagTopLeft.addClass('tlTarget');
   } else if (!Board.hasBlack(diagTopLeft) && !Board.hasRed(diagTopLeft)){
     diagTopLeft.addClass('legal');
+  }
+  if (!Board.hasBlack(diagBotRight) && Board.hasRed(diagBotRight) && !Board.hasRed(diagBotRightJump) && !Board.hasBlack(diagBotRightJump)) {
+    diagBotRightJump.addClass('brJump');
+    diagBotRight.addClass('brTarget');
+  } else if (!Board.hasBlack(diagBotRight) && !Board.hasRed(diagBotRight)){
+    diagBotRight.addClass('legal');
+  }
+  if (!Board.hasBlack(diagBotLeft) && Board.hasRed(diagBotLeft) && !Board.hasRed(diagBotLeftJump) && !Board.hasBlack(diagBotLeftJump)) {
+    diagBotLeftJump.addClass('blJump');
+    diagBotLeft.addClass('blTarget');
+  } else if (!Board.hasBlack(diagBotLeft) && !Board.hasRed(diagBotLeft)){
+    diagBotLeft.addClass('legal');
   }
 };
 
@@ -140,98 +162,87 @@ Board.hasRed = function(square){
 };
 
 Board.move = function(){
-  $('.current').remove();
-  if(Board.activePlayer === 'red'){
-    $('h1').text('Black');
-    Board.activePlayer = 'black';
-    Board.createPiece($(this), 'red', 'Pawn');
-    Board.cleanup();
-    $('.blackPawn, .blackKing').click(Board.show);
-    Board.isKing($(this), 'red');
-  } else {
-    $('h1').text('Red');
-    Board.activePlayer = 'red';
-    Board.createPiece($(this), 'black', 'Pawn');
-    Board.cleanup();
-    $('.redPawn, .redKing').click(Board.show);
-    Board.isKing($(this), 'black');
+  if ($('.current').hasClass('redPawn')){
+    Board.executeMove($(this), 'red', 'Pawn');
+  } else if ($('.current').hasClass('redKing')){
+    Board.executeMove($(this), 'red', 'King');
+  } else if ($('.current').hasClass('blackPawn')){
+    Board.executeMove($(this), 'black', 'Pawn');
+  } else if ($('.current').hasClass('blackKing')){
+    Board.executeMove($(this), 'black', 'King');
   }
+};
+
+Board.executeMove = function(place, color, type){
+  $('.current').remove();
+  Board.createPiece(place, color, type);
+  Board.cleanup();
   $('*').removeClass('current');
+  Board.isKing(place, color);
+  Board.nextMove();
+}
 
-};
+Board.jump = function(e){
+  if ($('.current').hasClass('redPawn')){
+    Board.executeJump(e, $(this), 'red', 'Pawn');
+  }
+  if ($('.current').hasClass('redKing')){
+    Board.executeJump(e, $(this), 'red', 'King');
+  }
+  if ($('.current').hasClass('blackPawn')){
+    Board.executeJump(e, $(this), 'black', 'Pawn');
+  }
+  if ($('.current').hasClass('blackKing')){
+    Board.executeJump(e, $(this), 'black', 'King');
+  }
+}
 
-Board.lJump = function(){
+Board.executeJump = function(e, place, color, type){
   $('.current').remove();
-  if(Board.activePlayer === 'red'){
-    Board.createPiece($(this), 'red', 'Pawn');
-    $('.lTarget').children().remove();
-    Board.cleanup();
-    Board.findRedPawnLegal($(this));
-    if ($('.lJump, .rJump').length > 0){
-      $('.rJump').click(Board.rJump);
-      $('.lJump').click(Board.lJump);
-    } else {
-      Board.isKing($(this), 'red');
-      $('*').removeClass('current');
-      Board.cleanup();
-      $('.blackPawn, .blackKing').click(Board.show);
-      Board.activePlayer = 'black';
-      $('h1').text('Black');
-    }
+  Board.createPiece(place, color, type);
+  e.data.target.children().remove();
+  Board.cleanup();
+  Board.findMoves(place, color, type);
+  if ($('.lJump, .rJump, .trJump, .tlJump, brJump, .blJump').length > 0){
+    Board.setJumps();
   } else {
-    Board.createPiece($(this), 'black', 'Pawn');
-    $('.lTarget').children().remove();
-    Board.cleanup();
-    Board.findBlackPawnLegal($(this));
-    if ($('.lJump, .rJump').length > 0){
-      $('.lJump').click(Board.lJump);
-    } else {
-      Board.isKing($(this), 'black');
-      $('*').removeClass('current');
-      Board.cleanup();
-      $('.redPawn, .redKing').click(Board.show);
-      Board.activePlayer = 'red';
-      $('h1').text('Red');
-    }
+    Board.isKing(place, color);
+    $('*').removeClass('current');
+    Board.nextMove();
   }
 };
 
-Board.rJump = function(){
-  $('.current').remove();
-  if(Board.activePlayer === 'red'){
-    Board.createPiece($(this), 'red', 'Pawn');
-    $('.rTarget').children().remove();
-    Board.cleanup();
+Board.setJumps = function(){
+    $('.legal').click(Board.move);
+    $('.lJump').click({'target':$('.lTarget')}, Board.jump);
+    $('.rJump').click({'target':$('.rTarget')}, Board.jump);
+    $('.trJump').click({'target':$('.trTarget')}, Board.jump);
+    $('.tlJump').click({'target':$('.tlTarget')}, Board.jump);
+    $('.brJump').click({'target':$('.brTarget')}, Board.jump);
+    $('.blJump').click({'target':$('.blTarget')}, Board.jump);
+};
+
+Board.findMoves = function(place, color, type){
+  if (color === 'red' && type === 'Pawn'){
     Board.findRedPawnLegal($(this));
-    if ($('.lJump, .rJump').length > 0){
-      $('.lJump').click(Board.lJump);
-      $('.rJump').click(Board.rJump);
-    } else {
-      Board.isKing($(this), 'red');
-      $('*').removeClass('current');
-      Board.cleanup();
-      $('.blackPawn, .blackKing').click(Board.show);
-      Board.activePlayer = 'black';
-      $('h1').text('Black');
-      $('.current').removeClass('current');
-    }
-  } else {
-    Board.createPiece($(this), 'black', 'Pawn');
-    $('.rTarget').children().remove();
-    Board.cleanup();
+  } else if (color === 'red' && type === 'King'){
+    Board.findRedKingLegal($(this));
+  } else if (color === 'black' && type === 'Pawn'){
     Board.findBlackPawnLegal($(this));
-    if ($('.lJump, .rJump').length > 0){
-      $('.lJump').click(Board.lJump);
-      $('.rJump').click(Board.rJump);
-    } else {
-      Board.isKing($(this), 'black');
-      $('*').removeClass('current');
-      Board.cleanup();
-      $('.redPawn, .redKing').click(Board.show);
-      Board.activePlayer = 'red';
-      $('h1').text('Red');
-      $('.current').removeClass('current');
-    }
+  } else if (color === 'black' && type === 'King'){
+    Board.findBlackKingLegal($(this));
+  }
+};
+
+Board.nextMove = function(){
+  if (Board.activePlayer === 'red'){
+    Board.activePlayer = 'black';
+    $('h1').text('Black');
+    $('.blackPawn, .blackKing').click(Board.show);
+  } else {
+    Board.activePlayer = 'red';
+    $('h1').text('Red');
+    $('.redPawn, .redKing').click(Board.show);
   }
 };
 

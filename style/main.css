@@ -53,7 +53,7 @@
   background: repeating-linear-gradient(135deg, black, black 10px, gray 10px, gray 20px);
 }
 
-.legal, .lJump, .rJump {
+.legal, .lJump, .rJump, .tlJump, .trJump, .brJump, .blJump, .jump {
   background: repeating-linear-gradient(45deg, #A0522D, #A0522D 10px, #70391F 10px, #70391F 20px);
 }
 
