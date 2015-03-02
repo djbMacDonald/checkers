@@ -1,4 +1,5 @@
-$(document).ready(function(){
+$('#enter').click(function(){
+  $('#intro').remove();
   Board.create();
 });
 

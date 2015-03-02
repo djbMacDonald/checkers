@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$('#enter').click(function(){
   Board.setPieces();
 });
 

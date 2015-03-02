@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$('#enter').click(function(){
   $('h1').text('Red');
   $('.redPawn').click(Board.show);
 });
@@ -15,11 +15,11 @@ Board.show = function(){
   if ($(this).hasClass('redPawn')){
     Board.findMoves($(this).parent(), 'red', 'Pawn');
   } else if ($(this).hasClass('blackPawn')) {
-    Board.findMoves($(this).parent(), 'red', 'Pawn');
+    Board.findMoves($(this).parent(), 'black', 'Pawn');
   } else if ($(this).hasClass('redKing')) {
-    Board.findMoves($(this).parent(), 'red', 'Pawn');
+    Board.findMoves($(this).parent(), 'red', 'King');
   } else if ($(this).hasClass('blackKing')) {
-    Board.findMoves($(this).parent(), 'red', 'Pawn');
+    Board.findMoves($(this).parent(), 'black', 'King');
   }
   Board.setMoves();
   Board.setJumps();
@@ -56,13 +56,13 @@ Board.findBlackPawnLegal = function(square){
   var diagLeftJump = $("#" + (row + 2)%8 + "_" + (col + 6)%8);
 
   if (!Board.hasBlack(diagRight) && Board.hasRed(diagRight) && !Board.hasRed(diagRightJump) && !Board.hasBlack(diagRightJump)) {
-    diagRightJump.addClass('rjump');
+    diagRightJump.addClass('rJump');
     diagRight.addClass('rTarget');
   } else if (!Board.hasBlack(diagRight) && !Board.hasRed(diagRight)){
     diagRight.addClass('legal');
   }
   if (!Board.hasBlack(diagLeft) && Board.hasRed(diagLeft) && !Board.hasRed(diagLeftJump) && !Board.hasBlack(diagLeftJump)) {
-    diagLeftJump.addClass('ljump');
+    diagLeftJump.addClass('lJump');
     diagLeft.addClass('lTarget');
   } else if (!Board.hasBlack(diagLeft) && !Board.hasRed(diagLeft)){
     diagLeft.addClass('legal');
@@ -181,6 +181,7 @@ Board.executeMove = function(place, color, type){
   $('*').removeClass('current');
   Board.isKing(place, color);
   Board.nextMove();
+  Board.checkWin();
 }
 
 Board.jump = function(e){
@@ -212,6 +213,7 @@ Board.executeJump = function(e, place, color, type){
     $('*').removeClass('current');
     Board.nextMove();
   }
+  Board.checkWin();
 };
 
 Board.setMoves = function(){
@@ -240,6 +242,7 @@ Board.findMoves = function(place, color, type){
 };
 
 Board.nextMove = function(){
+  Board.cleanup();
   if (Board.activePlayer === 'red'){
     Board.activePlayer = 'black';
     $('h1').text('Black');
@@ -268,6 +271,10 @@ Board.cleanup = function(){
   $('.brJump').removeClass('brJump');
   $('.lTarget').removeClass('lTarget');
   $('.rTarget').removeClass('rTarget');
+  $('.tlTarget').removeClass('tlTarget');
+  $('.trTarget').removeClass('trTarget');
+  $('.blTarget').removeClass('blTarget');
+  $('.brTarget').removeClass('brTarget');
   $('.legal').removeClass('legal')
 }
 
@@ -278,5 +285,15 @@ Board.isKing = function(place, color){
   } else if (color==='black' && place.has('div.blackPawn').length > 0 && place.data().row === 7){
     place.children().remove();
     Board.createPiece(place, 'black', 'King');
+  }
+};
+
+Board.checkWin = function(){
+  if ($('.redPawn').length === 0 && $('.redKing').length === 0){
+    $('*').unbind();
+    $('h1').text('Black Wins');
+  } else if ($('.blackPawn').length === 0 && $('.blackKing').length === 0){
+    $('*').unbind();
+    $('h1').text('Red Wins');
   }
 };
