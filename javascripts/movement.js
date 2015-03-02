@@ -1,5 +1,5 @@
 $('#enter').click(function(){
-  $('h1').text('Red');
+  $('h1').text("Red's Move");
   $('.redPawn').click(Board.show);
 });
 
@@ -245,11 +245,11 @@ Board.nextMove = function(){
   Board.cleanup();
   if (Board.activePlayer === 'red'){
     Board.activePlayer = 'black';
-    $('h1').text('Black');
+    $('h1').text("Black's Move");
     $('.blackPawn, .blackKing').click(Board.show);
   } else {
     Board.activePlayer = 'red';
-    $('h1').text('Red');
+    $('h1').text("Red's Move");
     $('.redPawn, .redKing').click(Board.show);
   }
 };
