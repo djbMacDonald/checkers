@@ -33,7 +33,6 @@
   height: 90px;
   width: 90px;
   margin: 5px auto 5px auto;
-  border: 1px solid black;
 }
 
 .redKing {
@@ -42,7 +41,7 @@
   height: 90px;
   width: 90px;
   margin: 5px auto 5px auto;
-  border: 10px solid black;
+  background: repeating-linear-gradient(135deg, red, red 10px, maroon 10px, maroon 20px);
 }
 
 .blackKing {
@@ -51,7 +50,7 @@
   height: 90px;
   width: 90px;
   margin: 5px auto 5px auto;
-  border: 10px solid black;
+  background: repeating-linear-gradient(135deg, black, black 10px, gray 10px, gray 20px);
 }
 
 .legal, .lJump, .rJump {
