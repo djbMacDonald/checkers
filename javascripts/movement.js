@@ -178,8 +178,8 @@ Board.executeMove = function(place, color, type){
   $('.current').remove();
   Board.createPiece(place, color, type);
   Board.cleanup();
-  $('*').removeClass('current');
   Board.isKing(place, color);
+  $('*').removeClass('current');
   Board.nextMove();
   Board.checkWin();
 }
