@@ -9,7 +9,11 @@ Board.activePlayer = 'red';
 
 Board.show = function(){
   $('.legal').unbind();
+  $('.lJump').unbind();
+  $('.rJump').unbind();
   $('.square').removeClass('legal');
+  $('.square').removeClass('lJump');
+  $('.square').removeClass('rJump');
   $('*').removeClass('current');
   $(this).addClass('current');
   if ($(this).hasClass('redPawn')){
